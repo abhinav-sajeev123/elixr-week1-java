@@ -61,7 +61,7 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public ResponseEntity<StudentResponse> editStudent(int id, EditStudentPayload editPayload) {
+    public ResponseEntity<StudentResponse> editStudent(Integer id, EditStudentPayload editPayload) {
             for (Student student : students) {
 
                 if (student.getId() == id) {
@@ -91,7 +91,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<StudentResponse> deleteStudent(int id) {
+    public ResponseEntity<StudentResponse> deleteStudent(Integer id) {
         for(Student s:students){
             if(s.getId()==id){
                 students.remove(s);
@@ -106,7 +106,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<StudentResponse> getStudentById(int id) {
+    public ResponseEntity<StudentResponse> getStudentById(Integer id) {
         for(Student s:students){
             if(s.getId()==id){
                 StudentResponse response=new StudentResponse();

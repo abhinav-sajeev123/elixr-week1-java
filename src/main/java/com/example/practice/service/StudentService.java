@@ -12,10 +12,10 @@ public interface StudentService {
 
     ResponseEntity<List<StudentResponse>> getStudents();
 
-    ResponseEntity<StudentResponse> editStudent(int id, EditStudentPayload editPayload);
+    ResponseEntity<StudentResponse> editStudent(Integer id, EditStudentPayload editPayload);
 
-    ResponseEntity<StudentResponse> deleteStudent(int id);
+    ResponseEntity<StudentResponse> deleteStudent(Integer id);
 
-    ResponseEntity<StudentResponse> getStudentById(int id);
+    ResponseEntity<StudentResponse> getStudentById(Integer id);
 }
     

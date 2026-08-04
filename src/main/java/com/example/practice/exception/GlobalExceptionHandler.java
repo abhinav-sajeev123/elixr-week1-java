@@ -3,6 +3,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.practice.response.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
@@ -17,7 +18,6 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-
         }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,5 +31,14 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
+        @ExceptionHandler(MissingServletRequestParameterException.class)
+        public ResponseEntity<ErrorResponse>handleMissingParameter(MissingServletRequestParameterException ex){
+                ErrorResponse errorResponse=new ErrorResponse(ex.getParameterName()+" : Parameter is required to fill",
+                       HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now()
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
 }
