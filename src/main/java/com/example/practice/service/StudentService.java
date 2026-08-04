@@ -15,5 +15,7 @@ public interface StudentService {
     ResponseEntity<StudentResponse> editStudent(int id, EditStudentPayload editPayload);
 
     ResponseEntity<StudentResponse> deleteStudent(int id);
+
+    ResponseEntity<StudentResponse> getStudentById(int id);
 }
     
