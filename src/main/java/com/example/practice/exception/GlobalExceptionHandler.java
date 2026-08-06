@@ -1,44 +1,72 @@
 package com.example.practice.exception;
+import com.example.practice.response.GenericResponse;
+import com.example.practice.response.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.example.practice.response.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
         @ExceptionHandler(StudentNotFoundException.class)
-        public ResponseEntity<ErrorResponse>handleStudentNotFound(StudentNotFoundException ex){
-        ErrorResponse errorResponse=new ErrorResponse(ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
+        public ResponseEntity<GenericResponse>handleStudentNotFound(StudentNotFoundException ex){
+        GenericResponse genericResponse=new GenericResponse(Status.FAILURE,
+                ex.getMessage(),
+                null,
+                null,
                 LocalDateTime.now()
         );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponse);
         }
 
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        public ResponseEntity<ErrorResponse>handleValidation(MethodArgumentNotValidException ex){
-        String message=ex.getBindingResult()
-                .getFieldError()
-                .getDefaultMessage();
-
-        ErrorResponse errorResponse=new ErrorResponse(message,
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
 
         @ExceptionHandler(MissingServletRequestParameterException.class)
-        public ResponseEntity<ErrorResponse>handleMissingParameter(MissingServletRequestParameterException ex){
-                ErrorResponse errorResponse=new ErrorResponse(ex.getParameterName()+" : Parameter is required to fill",
-                       HttpStatus.BAD_REQUEST.value(),
+        public ResponseEntity<GenericResponse>handleMissingParameter(MissingServletRequestParameterException ex){
+                GenericResponse genericResponse=new GenericResponse(Status.FAILURE,
+                        "parameter is required to fill",
+                       null,
+                       null,
                         LocalDateTime.now()
                 );
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponse);
+        }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<GenericResponse>handleTypeMismatch(MethodArgumentTypeMismatchException ex){
+                GenericResponse genericResponse =new GenericResponse(Status.FAILURE,
+                        "Parameter should be a number",
+                        null,
+                        null,
+                        LocalDateTime.now()
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponse);
+        }
+
+        @ExceptionHandler(ValidationException.class)
+        public ResponseEntity<GenericResponse>handleValidationError(ValidationException ex){
+                GenericResponse genericResponse=new GenericResponse(Status.FAILURE,
+                        null,
+                        ex.getErrors(),
+                        null,
+                        LocalDateTime.now()
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponse);
+        }
+
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<GenericResponse>handleJsonFormatAndMismatchType(HttpMessageNotReadableException ex){
+                GenericResponse genericResponse=new GenericResponse(Status.FAILURE,
+                        "Invalid json format or datatype mismatch",
+                        null,
+                        null,
+                        LocalDateTime.now()
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponse);
         }
 }

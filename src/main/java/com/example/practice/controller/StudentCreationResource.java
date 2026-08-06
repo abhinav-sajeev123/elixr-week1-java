@@ -1,31 +1,27 @@
 package com.example.practice.controller;
-import com.example.practice.payload.EditStudentPayload;
+import com.example.practice.header_constants.ApiConstants;
 import com.example.practice.payload.StudentPayload;
+import com.example.practice.response.GenericResponse;
 import com.example.practice.response.StudentResponse;
 import com.example.practice.service.StudentService;
-import com.example.practice.validation.V1Validation;
-import com.example.practice.validation.V2Validation;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/students")
 public class StudentCreationResource {
 
-    @Autowired
-    StudentService studentService;
+    private final StudentService studentService;
 
-    @PostMapping(value = "/add",headers="API-VERSION=1")
-    public ResponseEntity<StudentResponse> addStudentV1(@Validated(V1Validation.class) @RequestBody StudentPayload studentPayload){
-        return studentService.addStudent(studentPayload);
+    @PostMapping(value = "/add",produces = ApiConstants.STUDENT_V1)
+    public ResponseEntity<GenericResponse<StudentResponse>> addStudentV1(@RequestBody StudentPayload studentPayload){
+        return studentService.addStudent(studentPayload, ApiConstants.STUDENT_V1);
     }
 
-    @PostMapping(value="/add",headers = "API-VERSION=2")
-    public ResponseEntity<StudentResponse> addStudentV2(@Validated(V2Validation.class) @RequestBody StudentPayload studentPayload){
-        return studentService.addStudent(studentPayload);
+    @PostMapping(value="/add",produces = ApiConstants.STUDENT_V2)
+    public ResponseEntity<GenericResponse<StudentResponse>> addStudentV2(@RequestBody StudentPayload studentPayload){
+        return studentService.addStudent(studentPayload,ApiConstants.STUDENT_V2);
     }
 }
